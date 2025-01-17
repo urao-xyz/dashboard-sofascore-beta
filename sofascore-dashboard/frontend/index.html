@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manchester United Stats</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Statistiques de Manchester United</h1>
+        <button id="fetchStats">Afficher les statistiques</button>
+        <div id="stats"></div>
+    </div>
+    <script>
+        document.getElementById("fetchStats").addEventListener("click", async () => {
+            const response = await fetch("http://127.0.0.1:5000/api/team/manchester-united");
+            const data = await response.json();
+            const statsDiv = document.getElementById("stats");
+
+            if (data.error) {
+                statsDiv.innerHTML = `<p>${data.error}</p>`;
+                return;
+            }
+
+            statsDiv.innerHTML = `
+                <h2>${data.team_name}</h2>
+                <p>Journée actuelle: ${data.current_matchday}</p>
+                <p>Victoires: ${data.wins}</p>
+                <p>Matchs nuls: ${data.draws}</p>
+                <p>Défaites: ${data.losses}</p>
+                <p>Différence de buts: ${data.goal_difference}</p>
+                <p>Buts marqués: ${data.goals_scored}</p>
+                <p>Buts encaissés: ${data.goals_conceded}</p>
+                <p>Points: ${data.points}</p>
+                <h3>5 Derniers Matchs</h3>
+                <ul>
+                    ${data.last_matches.map(match => `
+                        <li>${match.date}: ${match.home_team} ${match.score} ${match.away_team}</li>
+                    `).join("")}
+                </ul>
+            `;
+        });
+    </script>
+</body>
+</html>
